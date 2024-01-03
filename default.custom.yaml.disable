@@ -1,0 +1,16 @@
+patch:
+  app_options: {}
+  "ascii_composer/good_old_caps_lock": true
+  "ascii_composer/switch_key":
+    Caps_Lock: commit_code
+    Control_L: noop # 不做任何操作
+    Control_R: noop # 不做任何操作
+    Shift_L: commit_code
+    Shift_R: noop
+  "menu/page_size": 6
+  "switcher/hotkeys":
+    - "Alt+grave"
+  "translator/enable_encoder": true
+  "translator/enable_sentence": true
+  "translator/enable_user_dict": true
+  "translator/encode_commit_history": false

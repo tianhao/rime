@@ -1,0 +1,143 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: wubi98_dz
+  name: "五笔98·字"
+  version: "0.10"
+  author:
+    - 發明人 王永民
+  description: |
+    五笔98版
+    碼表源自 yanhuacuo
+    敲 z 鍵進入拼音反查
+  dependencies:
+    - pinyin_simp
+
+menu:
+  page_size: 6
+  
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: ascii_punct
+    states: [ ，。, ，． ]
+    reset: 0
+
+engine:
+  filters:
+    - simplifier
+    - uniquifier
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+#    - script_translator # 多字
+#    - lua_translator@date_translator # 日期Lua
+#    - lua_translator@time_translator # 时间Lua
+#    - lua_translator@week_translator # 星期Lua
+#    - lua_translator@number_translator # 金额大小写
+    - lua_translator@date_translator      # 时间、日期、星期
+    - reverse_lookup_translator
+    - table_translator
+
+speller:
+  #自动顶屏
+  auto_select: false
+  #auto_select: true
+  delimiter: "~"
+  max_code_length: 4
+
+translator:
+  dictionary: wubi98_dz
+  enable_charset_filter: false
+  enable_sentence: false
+  enable_encoder: false
+  encode_commit_history: false
+  max_phrase_length: 4
+  enable_completion: true
+  enable_user_dict: false
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+
+# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
+date_translator:
+  date: date       # 日期： 2022-11-29
+  datetime: datet   # ISO 8601： 2022-11-29T18:13:11+08:00
+  time: time       # 时间： 18:13
+  timestamp: times  # 时间戳： 1669716794
+  week: week       # 星期： 星期二
+
+
+reverse_lookup:
+  dictionary: pinyin_simp
+  prefix: "z"
+  suffix: "'"
+  tips: 〔拼音〕
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+# 符号
+punctuator:
+  import_preset: symbols
+  half_shape:
+    ',' : '，'
+    '.' : '。'
+    '<' : '《'
+    '>' : '》'
+#    '/' : '/'
+    '?' : '？'
+    ';' : '；'
+    ':' : '：'
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : '、'
+    '|' : '|'
+    '`' : '`'
+    '~' : '~'
+    '!' : '！'
+    '@' : '@'
+    '#' : '#'
+    '%' : '%'
+    '$' : '¥'
+    '^' : '……'
+    '&' : '&'
+    '*' : '*'
+    '(' : '（'
+    ')' : '）'
+    '-' : '-'
+    '_' : ——
+    '+' : '+'
+    '=' : '='
+    '[' : '【'
+    ']' : '】'
+    '{' : '「'
+    '}' : '」'
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/([0-9]0?|[A-Za-z]+)$"
+    email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"
+    uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
+    url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"
+    reverse_lookup: "^z[a-z]*'?$"
